@@ -44,6 +44,8 @@ class UsersActivity : AppCompatActivity() {
         }
     }
 
+
+
     companion object {
 
         fun newIntent(context: Context) = Intent(context, UsersActivity::class.java)
