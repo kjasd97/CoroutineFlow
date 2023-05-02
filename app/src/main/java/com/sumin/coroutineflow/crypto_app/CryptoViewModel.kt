@@ -1,28 +1,24 @@
 package com.sumin.coroutineflow.crypto_app
 
-import android.util.Log
 import androidx.lifecycle.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class CryptoViewModel : ViewModel() {
 
+
     private val repository = CryptoRepository
 
-    val state = repository.getCurrencyList()
-        .filter {
-            Log.d("tag", "filter")
-            it.isNotEmpty()
+    val state: Flow<State> = repository.getCurrencyList()
+        .filter { it.isNotEmpty() }
+        .map { State.Content(currencyList = it) as State }
+        .onStart { emit(State.Loading) }
+
+    fun refreshList() {
+        viewModelScope.launch {
+            repository.refreshList()
         }
-        .map {
-            Log.d("tag", "map")
-            State.Content(currencyList = it) as State
-        }
-        .onStart {
-            Log.d("tag", "start")
-            emit(State.Loading)
-        }
+    }
 
 
 //    private fun loadData() {
